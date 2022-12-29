@@ -1,5 +1,3 @@
-CAUTION: This email originated from outside of Sinclair. Do not click links or open attachments unless you recognize the sender and know the content is safe.
-
 # Checker Champ
 
 ## Description

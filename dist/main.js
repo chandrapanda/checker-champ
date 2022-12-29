@@ -32,7 +32,7 @@ window.addEventListener("resize", function () {
 });
 
 //object for square on game board
-function Rectangle(x, y, width, height, color) {
+function Square(x, y, width, height, color) {
   this.x = x;
   this.y = y;
   this.width = width;
@@ -66,13 +66,14 @@ function Rectangle(x, y, width, height, color) {
 function init() {
   for (let i = 0; i < canvas.width; i += 200) {
     for (let j = 0; j < canvas.height; j += 200) {
-      let rectangle = new Rectangle(i, j, 100, 100, "rgba(60, 179, 113, 0.5)");
-      rectangle.draw();
+      let square = new Square(i, j, 100, 100, "rgba(60, 179, 113, 0.5)");
+      square.draw();
     }
   }
   for (let i = 100; i < canvas.width; i += 200) {
     for (let j = 100; j < canvas.height; j += 200) {
-      let rectangle = new Rectangle(i, j, 100, 100, "rgba(60, 60, 60, 0.5)");
+      let square = new Square(i, j, 100, 100, "rgba(60, 60, 60, 0.5)");
+      square.draw();
     }
   }
 }
