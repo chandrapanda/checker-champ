@@ -6,15 +6,14 @@ This Checkerboard and gamepiece framework will be utilized as an example with ab
 
 ## Table of Contents
 
-1. [Installation](#installation)
+1. [Images](#images)
 2. [Usage](#usage)
 3. [Contributing](#contributing)
 4. [Tests](#tests)
-5. [Questions](#questions)
 
-## Installation
+## Images
 
-N/A
+![Current Board](./public/images/prelim-board.png)
 
 ## Usage
 
@@ -28,12 +27,6 @@ Chandra Holt
 
 N/A
 
-## Questions
-
 ### GitHub
 
 [GitHub](https://www.github.com/chandrapanda)
-
-### Email
-
-chandra_holt@hotmail.com

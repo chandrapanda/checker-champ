@@ -1,5 +1,7 @@
 //grab canvas through variable instantiation
-var canvas = document.querySelector("canvas");
+var canvas = document.getElementById("canvasCheckerboard");
+
+console.log("Welcome to the CHECKERBOARD, CHAMP!");
 
 //set canvas to full screen
 canvas.width = window.innerWidth;
@@ -8,7 +10,7 @@ canvas.height = window.innerHeight;
 //context variable
 var c = canvas.getContext("2d");
 
-//Create rectangles for game board
+//Create squares for game board
 // c.fillStyle = "rgba(60, 179, 113, 0.5)";
 // c.fillRect(400, 100, 100, 100);
 // c.fillStyle = "rgba(60, 60, 60, 0.5)";
@@ -28,7 +30,7 @@ window.addEventListener("mousemove", function (event) {
 window.addEventListener("resize", function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  init();
+  createCheckerBoard();
 });
 
 //object for square on game board
@@ -42,8 +44,6 @@ function Square(x, y, width, height, color) {
   this.draw = function () {
     c.fillStyle = this.color;
     c.fillRect(this.x, this.y, this.width, this.height);
-    // c.stroke();
-    // c.fill();
   };
 
   //this is where interactivity occurs
@@ -63,20 +63,58 @@ function Square(x, y, width, height, color) {
   this.draw();
 }
 
-function init() {
-  for (let i = 0; i < canvas.width; i += 200) {
-    for (let j = 0; j < canvas.height; j += 200) {
-      let square = new Square(i, j, 100, 100, "rgba(60, 179, 113, 0.5)");
-      square.draw();
+let squareArray = [];
+
+function createCheckerBoard() {
+  squareArray = [];
+  let squareSize = canvas.height / 12;
+  let topBoardHorizontal = canvas.height / 12;
+  let topBoardVertical = canvas.height / 12;
+
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      c.fillStyle =
+        (i + j) % 2 == 0 ? "rgba(60, 179, 113, 0.5)" : "rgba(60, 60, 60, 0.8)";
+      let x = topBoardHorizontal + j * squareSize;
+      let y = topBoardVertical + i * squareSize;
+      c.fillRect(x, y, squareSize, squareSize);
     }
   }
-  for (let i = 100; i < canvas.width; i += 200) {
-    for (let j = 100; j < canvas.height; j += 200) {
-      let square = new Square(i, j, 100, 100, "rgba(60, 60, 60, 0.5)");
-      square.draw();
-    }
-  }
+
+  //   for (let i = 0; i < canvas.width; i += 200) {
+  //     for (let j = 0; j < canvas.height; j += 200) {
+  //       let square = new Square(i, j, 100, 100, "rgba(60, 179, 113, 0.5)");
+  //       square.draw();
+  //     }
+  //   }
+  //   for (let i = 100; i < canvas.width; i += 200) {
+  //     for (let j = 100; j < canvas.height; j += 200) {
+  //       let square = new Square(i, j, 100, 100, "rgba(60, 60, 60, 0.5)");
+  //       square.draw();
+  //     }
+  //   }
 }
+
+// let circleArray = [];
+
+// function init() {
+//   circleArray = [];
+//   for (let i = 0; i < 400; i++) {
+//     var radius = Math.random() * 3 + 1;
+//     //set axes so that circles cannot break through borders of screen and get caught on edge where spawned
+//     var x = Math.random() * (innerWidth - radius * 2) + radius;
+//     var y = Math.random() * (innerHeight - radius * 2) + radius;
+//     var dx = Math.random() - 0.5;
+//     var dy = Math.random() - 0.5;
+//     let colorR = Math.random() * 255;
+//     let colorB = Math.random() * 255;
+//     let colorG = Math.random() * 255;
+//     let colorA = Math.random();
+//     let randomColor = `rgba(${colorR}, ${colorB}, ${colorG}, ${colorA} )`;
+//     circleArray.push(new Circle(x, y, dx, dy, radius, randomColor));
+//     //   var circle = new Circle(200, 200, 3, 3, 30);
+//   }
+// }
 
 // function animate() {
 //   //requestAnimationFrame takes another function has argument
@@ -89,7 +127,7 @@ function init() {
 //   }
 // }
 // animate();
-init();
+createCheckerBoard();
 
 //procedurally generate circles using a for loop
 // for (let i = 0; i < 8; i++) {
