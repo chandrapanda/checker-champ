@@ -8,13 +8,21 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 //context variable
-var c = canvas.getContext("2d");
+var ctx = canvas.getContext("2d");
+//context font
+ctx.font = "bold 24px Arial";
+
+//instantiate device pixel ratio
+const dpr = window.devicePixelRatio;
+const { width, height } = canvas.getBoundingClientRect();
+canvas.width = Math.round(width * dpr);
+canvas.height = Math.round(height * dpr);
 
 //Create squares for game board
-// c.fillStyle = "rgba(60, 179, 113, 0.5)";
-// c.fillRect(400, 100, 100, 100);
-// c.fillStyle = "rgba(60, 60, 60, 0.5)";
-// c.fillRect(300, 300, 100, 100);
+// ctx.fillStyle = "rgba(60, 179, 113, 0.5)";
+// ctx.fillRect(400, 100, 100, 100);
+// ctx.fillStyle = "rgba(60, 60, 60, 0.5)";
+// ctx.fillRect(300, 300, 100, 100);
 
 //instantiate mouse position
 let mouse = {
@@ -42,8 +50,8 @@ window.addEventListener("resize", function () {
 //   this.color = color;
 //create method within object to draw each square
 //   this.draw = function () {
-//     c.fillStyle = this.color;
-//     c.fillRect(this.x, this.y, this.width, this.height);
+//     ctx.fillStyle = this.color;
+//     ctx.fillRect(this.x, this.y, this.width, this.height);
 //   };
 // }
 
@@ -61,15 +69,15 @@ function Circle(x, y, dx, dy, radius, color) {
   //create method within object
   this.draw = function () {
     // Drawing arc / circle
-    c.beginPath();
+    ctx.beginPath();
     // //arc() takes x, y, radius, startAngle, endAngle, drawCounterClockwise
-    c.arc(this.xAxis, this.yAxis, this.radius, 0, Math.PI * 2, false);
+    ctx.arc(this.xAxis, this.yAxis, this.radius, 0, Math.PI * 2, false);
 
-    c.strokeStyle = color;
-    c.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
 
-    c.stroke();
-    c.fill();
+    ctx.stroke();
+    ctx.fill();
   };
   this.update = function () {
     if (this.xAxis + this.radius > innerWidth || this.xAxis - this.radius < 0) {
@@ -102,19 +110,23 @@ function Circle(x, y, dx, dy, radius, color) {
     this.draw();
   };
 }
-//TODO: create memory object: array within an array to access where on the board the pieces lie
+//memory object (array of objects within an array) to access where on the board the pieces lie
 //(use object like type:basePiece / kingPiece)
-//rows & columns
+let whiteTeamPiece = "white";
+let blackTeamPiece = "black";
+let whiteKingPiece = "whiteKing";
+let blackKingPiece = "blackKing";
 
 const pieceLocations = [
-  [{ team: "white" }, {}, {}, {}, {}, {}, {}, { team: "CHAOS" }],
+  //rows & columns
+  [{}, { team: whiteTeamPiece }, {}, {}, {}, {}, {}, { team: blackTeamPiece }],
   [{}, {}, {}, {}, {}, {}, {}, {}],
-  [{}, {}, { team: "white" }, {}, {}, { team: "white" }, {}, {}],
+  [{}, { team: whiteTeamPiece }, {}, {}, {}, {}, {}, { team: blackTeamPiece }],
   [{}, {}, {}, {}, {}, {}, {}, {}],
-  [{}, {}, {}, {}, {}, {}, { team: "black" }, {}],
-  [{}, {}, {}, {}, {}, {}, {}, {}],
-  [{}, {}, {}, {}, {}, {}, {}, {}],
-  [{ team: "Chris" }, {}, {}, {}, {}, {}, {}, { team: "white" }],
+  [{}, { team: whiteTeamPiece }, {}, {}, {}, {}, {}, { team: blackTeamPiece }],
+  [{}, {}, { team: blackTeamPiece }, {}, { team: blackTeamPiece }, {}, {}, {}],
+  [{}, {}, {}, {}, {}, { team: whiteKingPiece }, {}, { team: blackTeamPiece }],
+  [{ team: blackKingPiece }, {}, {}, {}, {}, {}, {}, {}],
 ];
 console.log(pieceLocations);
 //TODO: grab center coordinates for each square drawn so gamepiece objects have a reference point
@@ -126,11 +138,11 @@ function createCheckerBoard() {
 
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      c.fillStyle =
+      ctx.fillStyle =
         (i + j) % 2 == 0 ? "rgba(60, 179, 113, 0.5)" : "rgba(60, 60, 60, 0.8)";
       let x = topBoardHorizontal + j * squareSize;
       let y = topBoardVertical + i * squareSize;
-      c.fillRect(x, y, squareSize, squareSize);
+      ctx.fillRect(x, y, squareSize, squareSize);
     }
     drawGamePieces(pieceLocations);
   }
@@ -142,7 +154,6 @@ function drawGamePieces(pieceLocations) {
   let playerOnePieces = [];
   let playerTwoPieces = [];
   //iterate through piece locations and stick them where they should go
-
   for (let row = 0; row < pieceLocations.length; row++) {
     for (let column = 0; column < pieceLocations[row].length; column++) {
       let currentSpace = pieceLocations[row][column];
@@ -152,33 +163,61 @@ function drawGamePieces(pieceLocations) {
         let yCoord = squareSize * (column + 1) + squareSize / 2;
         console.log(xCoord + "y coord " + yCoord);
         //draw white gamepieces
-        let newGamePiece = c.beginPath();
-        c.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
-        c.fillStyle = "white";
-        c.strokeStyle = "black";
-        c.fill();
-        c.stroke();
-        c.closePath();
+        let newGamePiece = ctx.beginPath();
+        ctx.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
         playerOnePieces.push(newGamePiece);
         console.log(
-          "column " + column + "row " + row + "THERE IS A PLAYER HERE"
+          "column " + column + " row " + row + " THERE IS A WHITE PLAYER HERE"
         );
       } else if (currentSpace.team == "black") {
         let xCoord = squareSize * (row + 1) + squareSize / 2;
         let yCoord = squareSize * (column + 1) + squareSize / 2;
         console.log(xCoord + "y coord " + yCoord);
         //draw white gamepieces
-        let newGamePiece = c.beginPath();
-        c.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
-        c.fillStyle = "black";
-        c.strokeStyle = "white";
-        c.fill();
-        c.stroke();
-        c.closePath();
-        playerOnePieces.push(newGamePiece);
+        let newGamePiece = ctx.beginPath();
+        ctx.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "white";
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        playerTwoPieces.push(newGamePiece);
         console.log(
-          "column " + column + "row " + row + "THERE IS A PLAYER HERE"
+          "column " + column + " row " + row + " THERE IS A BLACK PLAYER HERE"
         );
+      } else if (currentSpace.team == "blackKing") {
+        let xCoord = squareSize * (row + 1) + squareSize / 2;
+        let yCoord = squareSize * (column + 1) + squareSize / 2;
+        console.log(xCoord + "y coord " + yCoord);
+        //draw black king gamepieces
+        let newGamePiece = ctx.beginPath();
+        ctx.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "white";
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        playerTwoPieces.push(newGamePiece);
+        ctx.font = "bold 14px";
+        ctx.strokeText("K", xCoord - 8, yCoord + 8);
+      } else if (currentSpace.team == "whiteKing") {
+        let xCoord = squareSize * (row + 1) + squareSize / 2;
+        let yCoord = squareSize * (column + 1) + squareSize / 2;
+        //draw white king gamepieces
+        let newGamePiece = ctx.beginPath();
+        ctx.arc(xCoord, yCoord, 20, 0, Math.PI * 2, false);
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        ctx.strokeText("K", xCoord - 8, yCoord + 8);
+        playerOnePieces.push(newGamePiece);
       }
     }
   }
@@ -187,13 +226,13 @@ function drawGamePieces(pieceLocations) {
 
   // for (let i = 0; i < 12; i++) {
   //   //draw black gamepieces
-  //   let newGamePiece = c.beginPath();
-  //   c.arc(115 + i * 100, 200 + i * 100, 20, 0, Math.PI * 2, false);
-  //   c.fillStyle = "black";
-  //   c.strokeStyle = "white";
-  //   c.fill();
-  //   c.stroke();
-  //   c.closePath();
+  //   let newGamePiece = ctx.beginPath();
+  //   ctx.arc(115 + i * 100, 200 + i * 100, 20, 0, Math.PI * 2, false);
+  //   ctx.fillStyle = "black";
+  //   ctx.strokeStyle = "white";
+  //   ctx.fill();
+  //   ctx.stroke();
+  //   ctx.closePath();
   //   playerTwoPieces.push(newGamePiece);
   // }
 }
@@ -222,7 +261,7 @@ function drawGamePieces(pieceLocations) {
 //   //requestAnimationFrame takes another function has argument
 //   requestAnimationFrame(animate);
 //   //clear canvas
-//   c.clearRect(0, 0, innerWidth, innerHeight);
+//   ctx.clearRect(0, 0, innerWidth, innerHeight);
 //   console.log("animate is being called");
 //   for (let i = 0; i < circleArray.length; i++) {
 //     circleArray[i].update();
@@ -240,10 +279,10 @@ createCheckerBoard();
 //   let colorG = Math.random() * 255;
 //   let colorA = Math.random();
 //   let randomColor = `rgba(${colorR}, ${colorB}, ${colorG}, ${colorA} )`;
-//   c.beginPath();
-//   c.arc(x, y, 30, 0, Math.PI * 2, false);
-//   c.strokeStyle = randomColor;
-//   c.stroke();
+//   ctx.beginPath();
+//   ctx.arc(x, y, 30, 0, Math.PI * 2, false);
+//   ctx.strokeStyle = randomColor;
+//   ctx.stroke();
 // }
 
 //

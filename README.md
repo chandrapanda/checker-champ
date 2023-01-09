@@ -13,7 +13,8 @@ This Checkerboard and gamepiece framework will be utilized as an example with ab
 
 ## Images
 
-![Current Board](./public/images/prelim-board.png)
+![Preliminary Board](./public/images/prelim-board.png)
+![Current Board](./public/images/new-board-1.png)
 
 ## Usage
 
